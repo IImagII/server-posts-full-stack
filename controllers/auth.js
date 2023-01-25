@@ -1,6 +1,7 @@
 //register user
-import User from '../models/User'
-import { bcryptjs } from 'bcryptjs'
+import User from '../models/User.js'
+import { validationResult } from 'express-validator'
+import bcryptjs from 'bcryptjs'
 
 export const register = async (req, res) => {
    try {
@@ -13,6 +14,7 @@ export const register = async (req, res) => {
       const { username, password } = req.body //вытягиваем из запроса через деструктуризацию
       // Поиск в базе данных
       const candidate = await User.findOne({ username })
+      //если такой пользователь уже существует
       if (candidate) {
          return res.status(409).json({
             message: 'Такой username уже существует',
@@ -27,6 +29,7 @@ export const register = async (req, res) => {
       })
       // запись в базу данных пользователя
       await user.save()
+      //это мы формируем ответ на фронтенд
       return res.status(200).json({ user, message: 'Пользователь создан' })
    } catch (e) {
       console.log(e)

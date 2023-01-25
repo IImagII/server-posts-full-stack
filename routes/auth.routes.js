@@ -1,6 +1,6 @@
 import { Router } from 'express'
 
-import { check, validationResult } from 'express-validator'
+import { check } from 'express-validator'
 import { register, login, getMe } from '../controllers/auth.js' // импортируем наш контролер отвечающий нзарегистрацию
 
 const router = new Router() //создаем сам роутер
