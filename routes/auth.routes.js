@@ -11,7 +11,7 @@ router.post(
    '/register',
    // параметр для валидации поля которые нужно проверять
    [
-      check('username', 'Не коректный username').exists(),
+      check('username', 'Не коректный username'),
 
       check('password', 'Не коретный пароль').isLength({ min: 3, max: 12 }),
    ],

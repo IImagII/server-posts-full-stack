@@ -2,6 +2,7 @@
 import User from '../models/User.js'
 import { validationResult } from 'express-validator'
 import bcryptjs from 'bcryptjs'
+import jwt from 'jsonwebtoken'
 
 export const register = async (req, res) => {
    try {
@@ -27,10 +28,19 @@ export const register = async (req, res) => {
          username,
          password: hashPassword,
       })
+      //нюанс сразу добавим токен
+      const token = jwt.sign(
+         {
+            id: user._id,
+         },
+         process.env.JWT_SECRET
+      )
       // запись в базу данных пользователя
       await user.save()
       //это мы формируем ответ на фронтенд
-      return res.status(200).json({ user, message: 'Пользователь создан' })
+      return res
+         .status(200)
+         .json({ user, token, message: 'Пользователь создан' })
    } catch (e) {
       console.log(e)
       res.send({ message: 'Server error', e })
