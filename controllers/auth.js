@@ -17,7 +17,7 @@ export const register = async (req, res) => {
       const candidate = await User.findOne({ username })
       //если такой пользователь уже существует
       if (candidate) {
-         return res.status(409).json({
+         return res.status(200).json({
             message: 'Такой username уже существует',
          })
       }
@@ -50,13 +50,41 @@ export const register = async (req, res) => {
 //register login
 export const login = async (req, res) => {
    try {
+      const { username, password } = req.body //вытягиваем из запроса через деструктуризацию
+      const user = await User.findOne({ username })
+      if (!user) {
+         return res
+            .status(404)
+            .json({ message: 'Такой пользователь не найден' })
+      }
+      // расшифровываем пароль чтобы его сравнить
+      const isPassValid = bcryptjs.compareSync(password, user.password)
+      //если пароли не совпадают выдаем ошибку
+      if (!isPassValid) {
+         return res.status(400).json({ message: 'Не корректный пароль' })
+      }
+      //если все хорошо создаем токен
+      const token = jwt.sign(
+         {
+            id: user._id,
+         },
+         //это секретная фраза для шифровки и последующей расшифровки
+         process.env.JWT_SECRET,
+         { expiresIn: '30d' }
+      )
+      // отправляем все на клиент для авторизации
+      return res.json({
+         token,
+         user,
+         message: 'Вы вошли в систему',
+      })
    } catch (e) {
-      console.log(e)
-      res.send({ message: 'Server error', e })
+      res.send({ message: 'Ошибка при авторизации', e })
    }
 }
 
-//register get me
+//register get me( это получение самого профиля)
+
 export const getMe = async (req, res) => {
    try {
    } catch (e) {
