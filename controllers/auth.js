@@ -3,6 +3,7 @@ import User from '../models/User.js'
 import { validationResult } from 'express-validator'
 import bcryptjs from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import { ResultWithContext } from 'express-validator/src/chain/context-runner-impl.js'
 
 export const register = async (req, res) => {
    try {
@@ -87,6 +88,22 @@ export const login = async (req, res) => {
 
 export const getMe = async (req, res) => {
    try {
+      const user = await User.findById(req.userId)
+      if (!user) {
+         return res
+            .status(404)
+            .json({ message: 'Такой пользователь не найден' })
+      }
+      //мы опять создали токен он будет такойже потомучто id у нас не меняется
+      const token = jwt.sign(
+         {
+            id: user._id,
+         },
+         //это секретная фраза для шифровки и последующей расшифровки
+         process.env.JWT_SECRET,
+         { expiresIn: '30d' }
+      )
+      return res.json({ user, token })
    } catch (e) {
       console.log(e)
       res.send({ message: 'Server error', e })

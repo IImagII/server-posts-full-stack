@@ -2,6 +2,7 @@ import { Router } from 'express'
 
 import { check } from 'express-validator'
 import { register, login, getMe } from '../controllers/auth.js' // импортируем наш контролер отвечающий нзарегистрацию
+import { checkAuth } from '../utils/checkAuth.js'
 
 const router = new Router() //создаем сам роутер
 
@@ -25,6 +26,6 @@ router.post('/login', login)
 
 //Делаем роутер get me - me
 //http://localhost:3002/api/auth/me
-router.post('/me', getMe)
+router.get('/me', checkAuth, getMe) // мы добавили middleware для того чтобы доступ к постам был только у авторизированных пользователей
 
 export default router
