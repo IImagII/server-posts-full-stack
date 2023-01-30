@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken'
 
 export const checkAuth = (req, res, next) => {
    // берем строку с ответа который нам приходит и тот коотры ймы написали в файле axios.js на фронтенде
-   const token = (req.headers.Authorization || '').replace(/Bearer\s?/, '') //Такой строкой мы доставем сам токен отбрасывая Bearer
+   const token = (req.headers.authorization || '').replace(/Bearer\s?/, '') //Такой строкой мы доставем сам токен отбрасывая Bearer
    // если токен присутсвует
    if (token) {
       try {

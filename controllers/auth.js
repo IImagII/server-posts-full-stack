@@ -3,7 +3,6 @@ import User from '../models/User.js'
 import { validationResult } from 'express-validator'
 import bcryptjs from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import { ResultWithContext } from 'express-validator/src/chain/context-runner-impl.js'
 
 export const register = async (req, res) => {
    try {
