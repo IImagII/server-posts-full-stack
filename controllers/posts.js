@@ -45,6 +45,22 @@ export const createPost = async (req, res) => {
       })
       return res.json(newPostWithoutImage) // возвращаем на фронтенд
    } catch (err) {
-      res.json({ message: 'Что-то пошло не так' })
+      res.json({ message: 'Что-то пошло не так 1' })
+   }
+}
+
+//получение всех постов
+export const getAll = async (req, res) => {
+   try {
+      const posts = await Post.find().sort('-createdAt') // мы находимосты и сортируем их по дате создания этой строкой
+      const popularPosts = await Post.find().limit(5).sort('-views') // тут мы выводим популярные посты в количестве 5 штук и сортируем по просмотрам
+      //делаем проверку если у нас нет постов
+      if (!posts) {
+         return res.json({ message: 'Постов нет' })
+      }
+      // а если они есть то отправляем их на клиент
+      res.json({ posts, popularPosts })
+   } catch (err) {
+      res.json({ message: 'Что-то пошло не так с постами' })
    }
 }
