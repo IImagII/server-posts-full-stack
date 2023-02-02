@@ -64,3 +64,55 @@ export const getAll = async (req, res) => {
       res.json({ message: 'Что-то пошло не так с постами' })
    }
 }
+
+//получение конкретного поста по id
+export const getById = async (req, res) => {
+   try {
+      const post = await Post.findByIdAndUpdate(req.params.id, {
+         //нам нужно увеличить просмотры views
+         $inc: { views: 1 }, // тут мы показываем что каждый раз мы будем увеличивать просомтры на 1 если такой пост будет найдет ивыдан
+      })
+      //делаем проверку
+      if (!post) {
+         return res.json({ message: 'Поста нет' })
+      }
+      res.json(post)
+   } catch (err) {
+      res.json({ message: 'Что-то пошло не так с данным постом' })
+   }
+}
+
+//получение всех постов конкретного пользователя
+export const getMyPosts = async (req, res) => {
+   try {
+      //сначало находим пользователя в базе
+      const user = await User.findById(req.userId)
+      // необходимо получить ве посты которые находятся в массиве у данного пользователя
+      const list = await Promise.all(
+         // мы проходимся по массиву постов и получаем инфрмацию по каждому из постов
+         user.posts.map(post => {
+            return Post.findById(post._id)
+         })
+      )
+      res.json(list)
+   } catch (err) {
+      res.json({ message: 'Что-то пошло не так с данным постом' })
+   }
+}
+
+//удаление поста
+export const removePost = async (req, res) => {
+   try {
+      // сначало находим пост когда он его найдет он его сразу и удалит
+      const post = await Post.findByIdAndDelete(req.params.id)
+      if (!post) return res.json({ message: 'Такого поста не найдено' })
+
+      //у конкретного пользователя из массива удалить этот пост чтобы он там не оставался
+      await User.findByIdAndUpdate(req.userId, {
+         $pull: { posts: req.params.id },
+      })
+      res.json({ message: 'Пост был удален' })
+   } catch (err) {
+      res.json({ message: 'Что-то пошло не так с данным постом' })
+   }
+}

@@ -1,6 +1,12 @@
 import { Router } from 'express'
 import { checkAuth } from '../utils/checkAuth.js'
-import { createPost, getAll } from '../controllers/posts.js'
+import {
+   createPost,
+   getAll,
+   getById,
+   getMyPosts,
+   removePost,
+} from '../controllers/posts.js'
 
 const router = new Router()
 //Create post
@@ -9,6 +15,18 @@ router.post('/', checkAuth, createPost) // обязательно через mid
 
 //Получение постов
 //localhost:3002/api/posts
-http: router.get('/', getAll)
+router.get('/', getAll)
+
+//Получение постов по id
+//localhost:3002/api/posts/:id
+router.get('/:id', getById)
+
+//Вывод всех постов конкретноо пользователя
+//localhost:3002/api/posts/user/me
+router.get('/user/me', checkAuth, getMyPosts)
+
+//Удаление постов
+//localhost:3002/api/posts/:id
+router.delete('/:id', checkAuth, removePost)
 
 export default router
