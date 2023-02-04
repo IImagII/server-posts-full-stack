@@ -4,6 +4,7 @@ import {
    createPost,
    getAll,
    getById,
+   getCommentsPost,
    getMyPosts,
    removePost,
    updatePost,
@@ -33,5 +34,9 @@ router.delete('/:id', checkAuth, removePost)
 //Редактивароние поста
 //localhost:3002/api/posts/:id
 router.put('/:id', checkAuth, updatePost)
+
+//Получение комментарии к посту
+//localhost:3002/api/posts/comments/:id
+router.get('/comments/:id', getCommentsPost)
 
 export default router

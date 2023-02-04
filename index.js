@@ -5,6 +5,8 @@ import dotenv from 'dotenv'
 import morgan from 'morgan'
 import authRoutes from './routes/auth.routes.js'
 import postRoutes from './routes/posts.routes.js'
+import commentsRoutes from './routes/comments.routes.js'
+
 import fileUpload from 'express-fileupload'
 
 const app = express() //создается такаим образом приложение
@@ -27,7 +29,7 @@ mongoose.set('strictQuery', true) // делаем чтобы не выскаки
 
 app.use('/api/auth', authRoutes) //вот мы подключили наш роутер авторизации, регистрации , профиля
 app.use('/api/posts', postRoutes) // роут обращения для создания поста
-
+app.use('/api/comments', commentsRoutes) // роут создание коментария
 mongoose
    .connect(
       `mongodb+srv://${DB_USER}:${DB_PASSWORD}@cluster0.zjnmy1r.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`

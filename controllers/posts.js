@@ -1,6 +1,6 @@
-import { title } from 'process'
 import Post from '../models/Post.js'
 import User from '../models/User.js'
+import Comment from '../models/Comment.js'
 import path, { dirname } from 'path' // это делается дляперемещения файла с картинкой
 import { fileURLToPath } from 'url' // это делается дляперемещения файла с картинкой
 
@@ -142,5 +142,24 @@ export const updatePost = async (req, res) => {
       res.json({ post, message: 'пост отредактирован' })
    } catch (err) {
       res.json({ message: 'Что-то пошло не так с данным постом' })
+   }
+}
+
+//получение всех коментариев по данному конкретномупосту
+export const getCommentsPost = async (req, res) => {
+   try {
+      //сначало находим пост в базе по id который мы берем из параметров
+      const post = await Post.findById(req.params.id)
+
+      // необходимо получить все коментарии которые находятся в массиве у данного поста
+      const list = await Promise.all(
+         // мы проходимся по массиву постов и получаем инфрмацию по каждому из постов
+         post.comments.map(comment => {
+            return Comment.findById(comment)
+         })
+      )
+      res.json(list)
+   } catch (err) {
+      res.json({ message: 'Что-то пошло не так с получением коментариев' })
    }
 }
