@@ -1,3 +1,4 @@
+import { title } from 'process'
 import Post from '../models/Post.js'
 import User from '../models/User.js'
 import path, { dirname } from 'path' // это делается дляперемещения файла с картинкой
@@ -112,6 +113,33 @@ export const removePost = async (req, res) => {
          $pull: { posts: req.params.id },
       })
       res.json({ message: 'Пост был удален' })
+   } catch (err) {
+      res.json({ message: 'Что-то пошло не так с данным постом' })
+   }
+}
+
+//Редактирвоание поста
+export const updatePost = async (req, res) => {
+   try {
+      //сначало из запроса получим поля которые мы изменяли на нашем фронтенде
+      const { title, text, id } = req.body
+      //  находим пост rjyrhtnysq
+      const post = await Post.findById(id) //по тому id который к нам пришел иззапроса фронтенда
+
+      //создаем путь опять для картинки если она будет новой(берем из создания поста)
+      // при этом делаем проверку если у нас картинка или нет
+      if (req.files) {
+         let fileName = Date.now().toString() + req.files.image.name // формируем имя для файла картинки
+         const __dirname = dirname(fileURLToPath(import.meta.url)) // благодаря этому мы получаем ту папку в которой мы находимся
+         req.files.image.mv(path.join(__dirname, '..', 'uploads', fileName)) // перемещаемся туда где будут хнариться файлы
+         post.imgUrl = fileName || '' // это строку добавляем сюда
+      }
+      post.title = title // тут делаем замену то что пришло title на новое
+      post.text = text // тут делаем замену то что пришло text на новое
+
+      await post.save() // теперь весь пост записываем целиком в базу данных
+
+      res.json({ post, message: 'пост отредактирован' })
    } catch (err) {
       res.json({ message: 'Что-то пошло не так с данным постом' })
    }

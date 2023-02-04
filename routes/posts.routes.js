@@ -6,6 +6,7 @@ import {
    getById,
    getMyPosts,
    removePost,
+   updatePost,
 } from '../controllers/posts.js'
 
 const router = new Router()
@@ -28,5 +29,9 @@ router.get('/user/me', checkAuth, getMyPosts)
 //Удаление постов
 //localhost:3002/api/posts/:id
 router.delete('/:id', checkAuth, removePost)
+
+//Редактивароние поста
+//localhost:3002/api/posts/:id
+router.put('/:id', checkAuth, updatePost)
 
 export default router
