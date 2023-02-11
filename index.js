@@ -30,6 +30,11 @@ mongoose.set('strictQuery', true) // делаем чтобы не выскаки
 app.use('/api/auth', authRoutes) //вот мы подключили наш роутер авторизации, регистрации , профиля
 app.use('/api/posts', postRoutes) // роут обращения для создания поста
 app.use('/api/comments', commentsRoutes) // роут создание коментария
+
+//Тестовый запрос для проверки
+app.get('/', (req, res) => {
+   res.send('Hello World')
+})
 mongoose
    .connect(
       `mongodb+srv://${DB_USER}:${DB_PASSWORD}@cluster0.zjnmy1r.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`
