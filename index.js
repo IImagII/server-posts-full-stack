@@ -36,7 +36,7 @@ mongoose
    )
    .then(() => {
       app.listen(PORT, () =>
-         console.log(`MongoDb connect and server run ${PORT}`)
+         console.log(`MongoDb connect and server run on ${PORT}`)
       )
    })
    .catch(error => console.log(error))
